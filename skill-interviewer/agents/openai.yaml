@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill 訪談員"
+  short_description: "用結構化訪談萃取專家判斷方式，編譯成可攜的跨平台 Skill"
+  default_prompt: "Use $skill-interviewer to interview me and compile my expertise into a reusable skill."
