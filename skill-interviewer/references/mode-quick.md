@@ -27,7 +27,7 @@
 速成模式可省略快檢。省略時：
 
 - 在產出 skill 的 coverage 區標 `#未驗證`。
-- 隨附的兩題測試 prompt（正常＋邊界）必須完整——那是使用者的自驗路徑。
+- 隨附的 self-test seed（正常＋邊界各一題，含 prompt／expected behavior／pass criteria 三欄）必須完整——那是使用者的自驗路徑。
 
 ## 升級為深度模式
 

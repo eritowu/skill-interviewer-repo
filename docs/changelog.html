@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill 訪談員 改版總表 v0.2 → v0.2.6</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDEFEC; --card:#F7F8F5; --ink:#1C2B25; --ink-soft:#4C5B54;
+  --seal:#BE4128; --blueprint:#2B5D8A; --rail:#93A29A; --ghost:#A8B2AB;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;line-height:1.75;font-size:15px}
+.wrap{max-width:880px;margin:0 auto;padding:56px 28px 90px}
+/* 文件頭 */
+header{border:2px solid var(--ink);padding:34px 34px 28px;position:relative;background:var(--card)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--ink-soft)}
+h1{font-family:'Noto Serif TC',serif;font-weight:900;font-size:clamp(26px,4.6vw,40px);line-height:1.25;margin:10px 0 6px}
+.sub{color:var(--ink-soft);max-width:60ch}
+.stamp{position:absolute;top:22px;right:26px;transform:rotate(-8deg);border:3px solid var(--seal);color:var(--seal);
+  font-family:'Noto Serif TC',serif;font-weight:900;font-size:19px;padding:7px 14px;border-radius:6px;letter-spacing:.14em;
+  box-shadow:0 0 0 2px var(--card),0 0 0 3px rgba(190,65,40,.25);background:rgba(190,65,40,.05)}
+.meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--rail)}
+.meta div{font-size:13px;color:var(--ink-soft)}
+.meta b{display:block;color:var(--ink);font-family:var(--mono);font-size:13.5px}
+/* 區段標 */
+h2{font-family:'Noto Serif TC',serif;font-weight:900;font-size:23px;margin:64px 0 8px;display:flex;align-items:baseline;gap:12px}
+h2 .tag{font-family:var(--mono);font-weight:600;font-size:11px;color:var(--blueprint);letter-spacing:.18em}
+.lede{color:var(--ink-soft);margin-bottom:26px;max-width:68ch}
+/* 鏈軌 */
+.chain{position:relative;padding-left:34px}
+.chain::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:var(--rail)}
+.node{position:relative;margin-bottom:30px}
+.node::before{content:"";position:absolute;left:-30px;top:14px;width:12px;height:12px;background:var(--card);
+  border:3px solid var(--ink);border-radius:50%}
+.node.final::before{border-color:var(--seal);background:var(--seal)}
+.vcard{background:var(--card);border:1px solid var(--rail);border-left:4px solid var(--ink);padding:20px 24px;transition:transform .15s}
+.node.final .vcard{border-left-color:var(--seal)}
+.vcard:hover{transform:translateX(3px)}
+.vhead{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.vname{font-family:'Noto Serif TC',serif;font-weight:900;font-size:19px}
+.vhash{font-family:var(--mono);font-size:12.5px;color:var(--blueprint)}
+.vdate{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+.incident{font-size:13.5px;color:var(--seal);font-weight:700;margin:2px 0 10px}
+dl{display:grid;grid-template-columns:64px 1fr;row-gap:7px;column-gap:14px;font-size:14px}
+dt{font-weight:700;color:var(--ink-soft);font-size:12.5px;letter-spacing:.14em;padding-top:2px}
+dd{color:var(--ink)}
+.delta{margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--rail);padding-top:9px}
+/* 幽靈支線 */
+.ghost{position:relative;margin:-14px 0 30px 26px;padding:10px 16px;border:1px dashed var(--ghost);color:var(--ink-soft);
+  font-size:12.5px;background:transparent}
+.ghost::before{content:"";position:absolute;left:-45px;top:50%;width:38px;height:1px;border-top:2px dashed var(--ghost)}
+.ghost code{font-family:var(--mono);text-decoration:line-through;color:var(--ghost)}
+/* 帳本表 */
+table{width:100%;border-collapse:collapse;background:var(--card);font-size:13px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-align:left;color:var(--ink-soft);
+  border-bottom:2px solid var(--ink);padding:10px 12px}
+td{padding:9px 12px;border-bottom:1px solid var(--rail);vertical-align:top}
+td.h{font-family:var(--mono);font-size:12px;color:var(--blueprint);white-space:nowrap}
+tr.dead td{color:var(--ghost)}
+tr.dead td.h{text-decoration:line-through;color:var(--ghost)}
+/* 三段與不變量 */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stage{background:var(--card);border-top:4px solid var(--blueprint);padding:16px 18px}
+.stage b{font-family:'Noto Serif TC',serif;font-size:15.5px;display:block;margin-bottom:6px}
+.stage span{font-size:13px;color:var(--ink-soft)}
+.plaque{border:2px solid var(--ink);background:var(--card);padding:22px 26px;margin-top:16px}
+.plaque p{font-family:'Noto Serif TC',serif;font-weight:600;font-size:15.5px;margin:6px 0}
+.plaque p b{color:var(--seal);font-family:var(--mono);font-weight:600;font-size:13px;margin-right:10px}
+/* 附錄 */
+.mini{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin-top:6px}
+.step{background:var(--card);border:1px solid var(--rail);padding:13px 16px;flex:1 1 150px;position:relative}
+.step+.step{border-left:none}
+.step em{font-style:normal;font-family:'Noto Serif TC',serif;font-weight:900;display:block;font-size:14.5px}
+.step code{font-family:var(--mono);font-size:11px;color:var(--blueprint)}
+.step p{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6}
+.step.sealed{border-left:4px solid var(--seal)}
+footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);letter-spacing:.06em}
+@media (max-width:640px){
+  .stages{grid-template-columns:1fr}
+  .stamp{position:static;display:inline-block;margin-top:14px;transform:rotate(-4deg)}
+  dl{grid-template-columns:1fr}dt{padding-top:6px}
+}
+@media (prefers-reduced-motion:reduce){.vcard{transition:none}.vcard:hover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">SKILL-INTERVIEWER · VERSION LEDGER · 2026-07-29 → 07-30</div>
+  <h1>Skill 訪談員 改版總表</h1>
+  <p class="sub">七個版本、六輪跨 AI 對抗驗收（Claude 編譯 × Codex 稽核）。一版一雜湊，雜湊綁內層；每一版都由一次真實事故驅動，每一道閘都先傷到作者自己。</p>
+  <div class="stamp">已凍結 v0.2.6</div>
+  <div class="meta">
+    <div>現行凍結版<b>v0.2.6 · 2bef9b4e…69ac</b></div>
+    <div>套件構成<b>7 檔（SKILL＋4 refs＋yaml＋preflight.py）</b></div>
+    <div>雙平台驗收<b>selftest 8/8 · Win + Linux</b></div>
+    <div>v0.3 backlog<b>13 條 · 凍結待議</b></div>
+  </div>
+</header>
+
+<h2><span class="tag">01</span>版本鏈</h2>
+<p class="lede">實線節點為出貨版；虛線幽靈支線為打包後、交付前因殘留掃描重打而作廢的位元組——從未流通，列出以防日後日誌誤判分叉。</p>
+
+<div class="chain">
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2</span><span class="vhash">876509d5…a809</span><span class="vdate">07-29</span></div>
+  <div class="incident">起點：把「訪談專家、編譯 skill」變成一套可執行契約</div>
+  <dl>
+    <dt>新增</dt><dd>七步流程（範圍→入口→地圖→路由→訪談→藍圖→編譯）；速成／深度雙模式、四指標路由與硬訊號；轉譯／訪談／混合三入口；台帳＋判例卡＋空格清單資料模型；統一骨架＋型別必填矩陣；Codex 相容層 <code>agents/openai.yaml</code>。</dd>
+    <dt>影響</dt><dd>六檔基準包成立，跨 AI 協作的共同語言就此定錨。</dd>
+  </dl>
+  <div class="delta">Δ 基準六檔</div>
+</div></div>
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.1</span><span class="vhash">62d99d53…3643</span><span class="vdate">07-29</span></div>
+  <div class="incident">事故：流程決定污染知識語意；owner 實名與黑名單互相死鎖</div>
+  <dl>
+    <dt>修正</dt><dd>路由覆寫不再記 <code>assumed</code>，改立 routing 事件；「帶 open 出貨」不再誤轉明示假設——出貨授權≠假設選定，三態不互轉；owner 預設部門／角色，實名需 confirmed 同意＋allowlist（僅豁免版次區）。</dd>
+    <dt>新增</dt><dd>語意去識別化複查（無名組合也能認人；泛化不刪除；判準關鍵數值不動）；self-test seed 三欄 oracle；checkpoint 固定落點＋日期子目錄；打包改封閉 allowlist；簽核時機移至「編譯後的實際草稿」。</dd>
+    <dt>影響</dt><dd>preflight 擴至 16 題；隱私與人工確認的骨架就位。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · output-template.md</div>
+</div></div>
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.2</span><span class="vhash">0b1247fb…e7fb</span><span class="vdate">07-29</span></div>
+  <div class="incident">事故：routing 範例是單一物件——第二筆事件會蓋掉第一筆</div>
+  <dl>
+    <dt>修正</dt><dd><code>routing_events</code> 陣列化、append-only、帶 <code>at</code> 時間戳，跨 checkpoint 合併可自述排序；「v0.2.x 只支援」改版本中立措辭，消滅逐版追改點。</dd>
+    <dt>影響</dt><dd>「建議過深度、被拒過」的歷史不再蒸發。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · output-template.md</div>
+</div></div>
+<div class="ghost">幽靈 <code>b24a6bbb…</code> — v0.2.3 首次打包後，殘留掃描抓到「全局紀律（兩模式）」量詞漏洞，交付前重打作廢。</div>
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.3</span><span class="vhash">74d5e9f6…fff9</span><span class="vdate">07-29</span></div>
+  <div class="incident">事故：轉譯入口實測跳過藍圖，直接把補格題印成交付物</div>
+  <dl>
+    <dt>修正</dt><dd>「不訪談」限縮為「不跑開放挖掘」；第六步升格三入口硬閘門——轉譯的規則沒有人點過頭，藍圖是唯一人工確認點；第七步加前置「無藍圖確認不得編譯」；掃除所有「兩模式」排除性量詞。</dd>
+    <dt>影響</dt><dd>preflight 第 10 題入列；隱式觸發 4/4、端到端補閘後全綠。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · output-template.md</div>
+</div></div>
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.4</span><span class="vhash">5bb1fc4c…3636</span><span class="vdate">07-29</span></div>
+  <div class="incident">生產事故：長訪談後 17 題 preflight 被整組跳過；Windows 打出反斜線包</div>
+  <dl>
+    <dt>新增</dt><dd><b>compile receipt</b>——逐章 present/missing 強制表格，「散落他處不算 present」；<code>scripts/preflight.py</code> 確定性驗證腳本（套件六檔→七檔）；版次區機讀 <code>type</code> 欄；打包後重開驗證。</dd>
+    <dt>調整</dt><dd>Compress-Archive 明文禁用；references 引用必須條件式，「詳見」不合格。</dd>
+    <dt>影響</dt><dd>preflight 擴至 19 題；文字閘在機械可判定層讓位給 fail-closed 閘。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · output-template.md · ＋scripts/preflight.py</div>
+</div></div>
+
+<div class="node"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.5</span><span class="vhash">7b500e4f…7717</span><span class="vdate">07-29</span></div>
+  <div class="incident">事故：fail-closed 閘門自己 fail-open——Linux 夾具給了假信心</div>
+  <dl>
+    <dt>修正</dt><dd>反斜線檢查改讀 <code>orig_filename</code>（Windows 的 namelist 已被正規化）；allowlist 由單向改 <code>--expect</code> 雙向完全相等＋反向引用掃描；openai.yaml 逐行嚴格驗證（零 PyYAML 依賴）；章節順序表；CRLF 正規化；觸發／排除句升 FAIL。</dd>
+    <dt>新增</dt><dd><code>--selftest</code> 六夾具內嵌——含手工 struct 打包的原始反斜線 zip，繞過各平台寫入正規化。</dd>
+    <dt>影響</dt><dd>閘門第一次能在任何環境自證 fail-closed。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · output-template.md · preflight.py 整檔重寫</div>
+</div></div>
+<div class="ghost">幽靈 <code>a284d504…</code> — v0.2.6 首次打包後，腳本 docstring 殘留「六個夾具」被掃出，交付前重打作廢。</div>
+
+<div class="node final"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.6</span><span class="vhash">2bef9b4e…69ac</span><span class="vdate">07-29 定案</span></div>
+  <div class="incident">事故：Windows selftest 第三題崩潰——偵測看原始路徑、讀檔卻拿原始字串查正規化索引</div>
+  <dl>
+    <dt>修正</dt><dd>映射改存 <code>ZipInfo</code>、<code>read()</code> 直接吃它，兩個世界對齊；metadata 重複鍵「恰好一次」；<code>$skill-name</code> token boundary 防前綴冒充；selftest 暫存 zip try/finally 清理。</dd>
+    <dt>新增</dt><dd>夾具 6→8（重複鍵、名稱前綴碰撞）。</dd>
+    <dt>影響</dt><dd>Windows 8/8、真實舊事故包正確被擋、官方驗證通過——雙平台簽核，凍結。後續六組平行戰役（多專家衝突、做事型、六攻擊、重編譯、四差分、三編譯器一致性）零 fail-open。</dd>
+  </dl>
+  <div class="delta">Δ preflight.py（主）· SKILL.md · output-template.md（版號與措辭）</div>
+</div></div>
+
+</div>
+
+<h2><span class="tag">02</span>雜湊帳本</h2>
+<p class="lede">「一版一雜湊」僅約束內層；外層 zip 為信使側封裝紀錄，不入版本契約。</p>
+<table>
+  <tr><th>版本</th><th>內層 SHA-256（前 16）</th><th>狀態</th><th>delta</th></tr>
+  <tr><td>v0.2</td><td class="h">876509d583e6f83c</td><td>已出貨</td><td>基準六檔</td></tr>
+  <tr><td>v0.2.1</td><td class="h">62d99d5338b52df1</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr><td>v0.2.2</td><td class="h">0b1247fb00e37eb0</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr class="dead"><td>—</td><td class="h">b24a6bbbe42becc1</td><td>作廢未流通</td><td>v0.2.3 殘留重打</td></tr>
+  <tr><td>v0.2.3</td><td class="h">74d5e9f6071cfaf6</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr><td>v0.2.4</td><td class="h">5bb1fc4c89327048</td><td>已出貨</td><td>＋preflight.py（7 檔）</td></tr>
+  <tr><td>v0.2.5</td><td class="h">7b500e4ff88a595f</td><td>已出貨</td><td>腳本重寫</td></tr>
+  <tr class="dead"><td>—</td><td class="h">a284d504c4e4cd8e</td><td>作廢未流通</td><td>v0.2.6 殘留重打</td></tr>
+  <tr><td><b>v0.2.6</b></td><td class="h"><b>2bef9b4e7dc4341e</b></td><td><b>凍結中</b></td><td>preflight.py 主修</td></tr>
+</table>
+
+<h2><span class="tag">03</span>三段演進與不變量</h2>
+<div class="stages">
+  <div class="stage"><b>v0.2 — 立骨</b><span>建立訪談與產出架構：流程、模式、入口、資料模型、骨架矩陣。</span></div>
+  <div class="stage"><b>v0.2.1–3 — 語意與治理</b><span>知識狀態不被流程污染、隱私雙關、三入口人工確認硬閘門。</span></div>
+  <div class="stage"><b>v0.2.4–6 — 驗證器自身的可信</b><span>收據承載注意力、腳本承載機械判定、selftest 承載腳本自己。</span></div>
+</div>
+<div class="plaque">
+  <p><b>不變量 I</b>一個欄位只回答一種事實問題；需要歷史、關係或推導時，改用事件、關聯或明確推導表。</p>
+  <p><b>不變量 II</b>任何硬控制的缺位，必須由另一個具名控制承接；不能由 <span style="font-family:var(--mono);font-size:13px">#待確認</span> 承接。</p>
+  <p><b>公理</b>失效案例決定控制結構與硬邊界；先找到母體，其他一切都是視圖。</p>
+</div>
+
+<h2><span class="tag">04</span>附錄：第一個工件——五金電器報價審核</h2>
+<p class="lede">工具機造出的第一個生產 skill。機械閘四次 0/0 之後，owner 一讀仍抓出四個會改行為的問題——結構、保真、領域三層閘，一層都省不得。</p>
+<div class="mini">
+  <div class="step"><em>v0.1 舊稿</em><code>D99E0289…</code><p>首次編譯；含 Windows 反斜線事故，成為 v0.2.5 的活體測試樣本。</p></div>
+  <div class="step"><em>fix1</em><code>dd6deb6b…</code><p>交叉稽核 5 類 13 處：C-012 布林統一、分母去固化、夾具污染排除回收、品牌普遍必填回收、coverage n/m。</p></div>
+  <div class="step"><em>fix2</em><code>2ac4c03f…</code><p>owner 四項：範圍自檢邏輯 bug＋三條新判準落卡 C-013～C-015（用途檢核效力、可比性前提、驗收放行分階）。</p></div>
+  <div class="step"><em>fix2.1</em><code>67d33a6c…</code><p>coverage 範圍 C-007～C-015；C-003／C-011 加後續澄清指標；fixture 隨新輸入契約遷移，十案 10/10。</p></div>
+  <div class="step sealed"><em>v0.1 簽核出貨</em><code>be44b0ca…</code><p>owner 簽核 2026-07-30；confirmed 15 條、coverage 3/7 完整＋4/7 部分或 open；第四案例人工快檢待跑。</p></div>
+</div>
+
+<footer>
+  <span>SKILL-INTERVIEWER LEDGER · 編譯 Claude × 稽核 Codex</span>
+  <span>凍結 v0.2.6 · 2BEF9B4E…69AC · BACKLOG 13</span>
+</footer>
+
+</div>
+</body>
+</html>

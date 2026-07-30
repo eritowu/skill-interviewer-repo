@@ -18,7 +18,7 @@
 | 交付物格式與驗收標準 | 選 | 必 | 必 |
 | 判例集 | 必（至少一張） | 選 | 必 |
 | 需請示區 | 必 | 必 | 必 |
-| 測試題（正常＋邊界） | 必 | 必 | 必 |
+| 測試題 self-test seed（正常＋邊界） | 必 | 必 | 必 |
 | coverage 與未確認假設 | 必 | 必 | 必 |
 | 版次與所有權（文末） | 必 | 必 | 必 |
 | 偏好區、詞彙表 | 選 | 選 | 選 |
@@ -101,7 +101,7 @@ description: <讓 LLM 或新人做哪類判斷、產出什麼交付物>。當使
 
 ## 判例集
 
-<三張以內內嵌此處；超過三張移至 `references/cases.md`，此處留索引與一句摘要。>
+<三張以內內嵌此處；超過三張移至 `references/cases.md`，此處留索引與一句摘要，且必須附條件式載入指令（照抄改寫）：「遇到與既有判例相似、需核對規則例外或理由時，讀取 `references/cases.md`；一般案件不必預載。」——只寫「詳見 cases.md」不合格。>
 
 **判例 #<n>**
 - 情境：<去識別化，但具體到能重演>
@@ -119,10 +119,19 @@ description: <讓 LLM 或新人做哪類判斷、產出什麼交付物>。當使
 
 請示時附三樣：情境、依這份 skill 走到哪一步、卡在哪一條。
 
-## 測試題
+## 測試題（self-test seed）
 
-- 正常：<改編自代表性判例的完整任務 prompt>
-- 邊界：<由某張判例做一次關鍵條件抽換改編而成；期望行為必須隨之翻轉，或落入需請示>
+**正常題**
+- prompt：<改編自代表性判例的完整任務 prompt>
+- expected behavior：<預期處置，一句話>
+- pass criteria：<處置正確，且引用規則 #n 作為依據>
+
+**邊界題**
+- prompt：<由某張判例做一次關鍵條件抽換改編而成>
+- expected behavior：<必須隨抽換而翻轉，或落入需請示——由抽換的那個條件直接推導>
+- pass criteria：<處置翻轉正確或正確請示（附情境、走到哪步、卡在哪條），且引用例外 #n 或需請示條目>
+
+未實際執行前一律維持 `#未驗證`，不得宣稱通過。
 
 ## coverage 與未確認假設
 
@@ -133,15 +142,18 @@ description: <讓 LLM 或新人做哪類判斷、產出什麼交付物>。當使
 
 ## 版次與所有權
 
-- owner：<專家／部門>
+- type：<判斷型｜做事型｜混合型>（機讀欄位，preflight 腳本依此選必填矩陣）
+- owner：<部門或角色（預設）。實名僅限：台帳有 `confirmed` 同意紀錄且已列入掃描 allowlist；allowlist 只豁免本區塊，判例正文出現同名照樣擋>
 - version：0.1<速成模式加註（coverage limited）>
 - interviewed：<YYYY-MM-DD>
-- source：skill-interviewer v0.2
+- source：skill-interviewer v0.2.6
 ```
 
 ## 測試題與判例的分工
 
-判例是萃取規則的**證據**；測試題是驗另一個 agent 能否正確**執行**。邊界測試題不得原樣照抄任何判例——照抄等於讓背案例的也能過關，驗的是答案不是思考。正確做法：取一張判例、抽換一個關鍵條件（金額縮放、對象抽換、資訊抽走），期望行為必須翻轉或落入需請示。
+判例是萃取規則的**證據**；測試題（self-test seed）是驗另一個 agent 能否正確**執行**。邊界測試題不得原樣照抄任何判例——照抄等於讓背案例的也能過關，驗的是答案不是思考。正確做法：取一張判例、抽換一個關鍵條件（金額縮放、對象抽換、資訊抽走），期望行為必須翻轉或落入需請示。
+
+pass criteria 判**處置與引用的規則／例外編號**，不判措辭——判措辭會把答對但換句話說的 agent 打成 fail，又回到驗答案不驗思考。expected behavior 與 pass criteria 全部由訪談既有資料推導（邊界題直接來自抽換規則），缺料就標 `#待補`，不腦補一個看起來合理的預期。
 
 ## `agents/openai.yaml`（Codex 目標時產出）
 
@@ -156,7 +168,29 @@ interface:
 
 ## 可選：governance.yaml
 
-需要機器可讀的治理資訊時，另外傾印一份（owner、version、interviewed、coverage）作為輔助檔。它不取代文末的版次與所有權區塊。
+需要機器可讀的治理資訊時，另外傾印一份（owner、version、interviewed、coverage）作為輔助檔。它不取代文末的版次與所有權區塊。若進公開包：必須列入 allowlist，且走完與其他公開檔**完全相同**的字串黑名單與語意複查——owner 欄位適用同一套實名同意規則。
+
+## compile receipt（編譯完成收據）
+
+編譯出公開草稿後、去識別化雙關**之前**，必須逐格填出這份收據——所有環境一律，無 shell 也不豁免。它把「記住十九題」變成「逐章證明」，是編譯完成閘門的承載控制：
+
+```yaml
+compile_receipt:
+  type: <判斷型|做事型|混合型>
+  template_version: v0.2.6
+  sections:                     # 該型別的每一個必填章逐列，值只有 present|missing
+    範圍自檢: present
+    適用範圍: present
+    # …照必填矩陣列完，一章不漏
+  self_test_seed: {normal: present|missing, boundary: present|missing, fields: "3/3"}
+  ledger_counts: {confirmed: <n>, assumed: <n>, open: <n>}
+  source_line: present|missing
+  references:
+    - {file: references/cases.md, load_condition: present|missing}
+  verdict: pass|fail
+```
+
+規則：**「內容散落在其他段落」不算 present**——章節標題與位置就是契約；缺資料的章保留標題並填 `#待補`，才算 present。任一必填章 missing → `verdict: fail` → 修完**重出整份收據**；verdict 為 pass 才准進雙關掃描、簽核與打包。收據落**私有 checkpoint**，永不進公開包。有 shell 的環境，收據之外必須實跑 `scripts/preflight.py` 對草稿與成品包做確定性複核，零錯誤才過；無 shell 環境以收據為準。腳本在新環境（尤其 Windows）首次使用前，先跑 `--selftest` 以內建對抗夾具全數自證 fail-closed（題數以腳本輸出為準）；驗成品包時帶 `--expect <收據檔案清單>` 做雙向完全相等。
 
 ## 編譯與打包自檢
 
@@ -168,16 +202,21 @@ interface:
 2. 標記「不確定」的判例，有沒有被寫成規則？（有＝搬去需請示區）
 3. 有沒有下游規則暗中依賴了未裁決衝突的其中一個立場？（有＝該規則降級併入衝突條目——這才是互斥規則真正的殺傷方式）
 4. 罕見但不可逆的例外，展開全套判準了嗎？（縮成一行「問人」的只能是罕見且可逆的）
-5. 公開包裡還有人名、客戶名、案名嗎？（以台帳身分欄位為黑名單，逐檔掃描）
-6. `#待補` 有沒有寫出跳過原因？（一律改成「未涵蓋情境」）
-7. 邊界測試題是判例抽換改編、且期望行為翻轉或落入需請示嗎？（原樣照抄＝重做）
-8. 正文有沒有量化能力承諾？（有＝刪）
+5. 字串黑名單掃過整份公開草稿了嗎？（台帳身分欄位逐名掃；allowlist 實名只豁免版次與所有權區塊，判例正文與衝突來源出現同名照樣擋）
+6. 語意複查做了嗎？（逐張判例問「內部人能否鎖定是誰」——唯一職稱＋日期＋金額這類無名組合也算；修復用泛化不用刪除，判準關鍵數值不動）
+7. `#待補` 有沒有寫出跳過原因？（一律改成「未涵蓋情境」）
+8. 邊界測試題是判例抽換改編、期望行為翻轉或落入需請示、且 prompt／expected behavior／pass criteria 三欄齊備嗎？（原樣照抄＝重做；缺欄＝補齊）
+9. 正文有沒有量化能力承諾？（有＝刪）
+10. 藍圖經使用者／專家明確確認了嗎？（三入口一律；轉譯入口的規則沒有人點過頭，藍圖是唯一確認點——無確認紀錄＝退回第六步）
 
 套件效度：
 
-9. 資料夾名＝frontmatter `name`＝yaml 的 `$skill-name`，三者一致？
-10. frontmatter 只有 `name` 與 `description`？description 含真實觸發語，不是只有標題？
-11. yaml 全部字串加引號？`short_description` 25–64 字元？`default_prompt` 含精確 `$<skill-name>`？
-12. 每個 references 檔都被 SKILL.md 明確引用並註明載入時機？
-13. 壓縮包內部路徑全用正斜線？私有 checkpoint 不在包內？
-14. 宣稱通過的測試都實際跑過？（沒跑＝不寫通過）
+11. compile receipt 已產出且 `verdict: pass`？（任一必填章 missing＝退回編譯，不得進掃描、簽核與打包）
+12. 有 shell 的環境，`scripts/preflight.py` 對草稿與成品包實跑且零錯誤？（無 shell 環境以收據為準；有 shell 而不跑，視同未過。新環境首次使用先 `--selftest`；成品包帶 `--expect` 收據清單）
+13. 資料夾名＝frontmatter `name`＝yaml 的 `$skill-name`，三者一致？
+14. frontmatter 只有 `name` 與 `description`？description 含真實觸發語**與明確不適用句**，不是只有標題？
+15. yaml 全部字串加引號？`short_description` 25–64 字元？`default_prompt` 含精確 `$<skill-name>`？
+16. 每個 references 檔都被 SKILL.md **條件式**引用（「遇到＿＿時讀取」）並註明載入時機？只寫「詳見」＝不合格。
+17. 打包後**重新開啟**壓縮包驗證：內容物與 allowlist 完全相等？路徑全 `/`（Windows 禁用 Compress-Archive）？私有 checkpoint 與收據不在包內？
+18. owner 簽核是對**編譯後的實際公開草稿**做的？（在雙關掃描之後、打包之前——對藍圖簽核無效）
+19. 宣稱通過的測試都實際跑過？（沒跑＝維持 `#未驗證`，不寫通過）
