@@ -58,7 +58,7 @@ table{width:100%;border-collapse:collapse;background:var(--card);font-size:13px}
 th{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-align:left;color:var(--ink-soft);
   border-bottom:2px solid var(--ink);padding:10px 12px}
 td{padding:9px 12px;border-bottom:1px solid var(--rail);vertical-align:top}
-td.h{font-family:var(--mono);font-size:12px;color:var(--blueprint);white-space:nowrap}
+td.h{font-family:var(--mono);font-size:10.5px;color:var(--blueprint);word-break:break-all;line-height:1.5}
 tr.dead td{color:var(--ghost)}
 tr.dead td.h{text-decoration:line-through;color:var(--ghost)}
 /* 三段與不變量 */
@@ -99,7 +99,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
     <div>現行凍結版<b>v0.2.6 · 2bef9b4e…69ac</b></div>
     <div>套件構成<b>7 檔（SKILL＋4 refs＋yaml＋preflight.py）</b></div>
     <div>雙平台驗收<b>selftest 8/8 · Win + Linux</b></div>
-    <div>v0.3 backlog<b>13 條 · 凍結待議</b></div>
+    <div>v0.3 backlog<b>12 條 · 凍結待議</b></div>
   </div>
 </header>
 
@@ -119,7 +119,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
 </div></div>
 
 <div class="node"><div class="vcard">
-  <div class="vhead"><span class="vname">v0.2.1</span><span class="vhash">62d99d53…3643</span><span class="vdate">07-29</span></div>
+  <div class="vhead"><span class="vname">v0.2.1</span><span class="vhash">62d99d53…5643</span><span class="vdate">07-29</span></div>
   <div class="incident">事故：流程決定污染知識語意；owner 實名與黑名單互相死鎖</div>
   <dl>
     <dt>修正</dt><dd>路由覆寫不再記 <code>assumed</code>，改立 routing 事件；「帶 open 出貨」不再誤轉明示假設——出貨授權≠假設選定，三態不互轉；owner 預設部門／角色，實名需 confirmed 同意＋allowlist（僅豁免版次區）。</dd>
@@ -187,18 +187,18 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
 </div>
 
 <h2><span class="tag">02</span>雜湊帳本</h2>
-<p class="lede">「一版一雜湊」僅約束內層；外層 zip 為信使側封裝紀錄，不入版本契約。</p>
+<p class="lede">「一版一雜湊」僅約束內層；外層 zip 為信使側封裝紀錄，不入版本契約。中間五版無 commit tree，本表即其唯一驗證錨點，故存完整 64 字。</p>
 <table>
-  <tr><th>版本</th><th>內層 SHA-256（前 16）</th><th>狀態</th><th>delta</th></tr>
-  <tr><td>v0.2</td><td class="h">876509d583e6f83c</td><td>已出貨</td><td>基準六檔</td></tr>
-  <tr><td>v0.2.1</td><td class="h">62d99d5338b52df1</td><td>已出貨</td><td>SKILL＋template</td></tr>
-  <tr><td>v0.2.2</td><td class="h">0b1247fb00e37eb0</td><td>已出貨</td><td>SKILL＋template</td></tr>
-  <tr class="dead"><td>—</td><td class="h">b24a6bbbe42becc1</td><td>作廢未流通</td><td>v0.2.3 殘留重打</td></tr>
-  <tr><td>v0.2.3</td><td class="h">74d5e9f6071cfaf6</td><td>已出貨</td><td>SKILL＋template</td></tr>
-  <tr><td>v0.2.4</td><td class="h">5bb1fc4c89327048</td><td>已出貨</td><td>＋preflight.py（7 檔）</td></tr>
-  <tr><td>v0.2.5</td><td class="h">7b500e4ff88a595f</td><td>已出貨</td><td>腳本重寫</td></tr>
-  <tr class="dead"><td>—</td><td class="h">a284d504c4e4cd8e</td><td>作廢未流通</td><td>v0.2.6 殘留重打</td></tr>
-  <tr><td><b>v0.2.6</b></td><td class="h"><b>2bef9b4e7dc4341e</b></td><td><b>凍結中</b></td><td>preflight.py 主修</td></tr>
+  <tr><th>版本</th><th>內層 SHA-256（完整 64 字）</th><th>狀態</th><th>delta</th></tr>
+  <tr><td>v0.2</td><td class="h">876509d583e6f83c68a4a7b6b7e1beef40c8f924d21b07af2cc0407cb335a809</td><td>已出貨</td><td>基準六檔</td></tr>
+  <tr><td>v0.2.1</td><td class="h">62d99d5338b52df16f24c665536783c438c15981b409feda979005b161da5643</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr><td>v0.2.2</td><td class="h">0b1247fb00e37eb089d8ce00c0debb67f09692d941e4f92bcc147cc5e56ee7fb</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr class="dead"><td>—</td><td class="h">b24a6bbbe42becc125ed260980e698ce2c823ffb51cca1737784d10d67026f80</td><td>作廢未流通</td><td>v0.2.3 殘留重打</td></tr>
+  <tr><td>v0.2.3</td><td class="h">74d5e9f6071cfaf6843955a2d86e7a7f47c6a4579b70af720a0b888cf051fff9</td><td>已出貨</td><td>SKILL＋template</td></tr>
+  <tr><td>v0.2.4</td><td class="h">5bb1fc4c89327048ce2c2e953147a0c8d43e394546196e5b1e55b32756fb3636</td><td>已出貨</td><td>＋preflight.py（7 檔）</td></tr>
+  <tr><td>v0.2.5</td><td class="h">7b500e4ff88a595fe8d6d3a500705c4790dbf79ee8a32887a09b9b4475017717</td><td>已出貨</td><td>腳本重寫</td></tr>
+  <tr class="dead"><td>—</td><td class="h">a284d504c4e4cd8e83c70a083e8d04069fbe858e725bee7a1311c95c91362d02</td><td>作廢未流通</td><td>v0.2.6 殘留重打</td></tr>
+  <tr><td><b>v0.2.6</b></td><td class="h"><b>2bef9b4e7dc4341ed3693181b6d52152c648e14f048f3644c7eb7543815d69ac</b></td><td><b>凍結中</b></td><td>preflight.py 主修</td></tr>
 </table>
 
 <h2><span class="tag">03</span>三段演進與不變量</h2>
@@ -223,9 +223,28 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <div class="step sealed"><em>v0.1 簽核出貨</em><code>be44b0ca…</code><p>owner 簽核 2026-07-30；confirmed 15 條、coverage 3/7 完整＋4/7 部分或 open；第四案例人工快檢待跑。</p></div>
 </div>
 
+
+<h2><span class="tag">05</span>v0.3 backlog（12 條，凍結待議）</h2>
+<p class="lede">計數一律由本清單推導，不得憑空遞增——清單是母體，數字只是視圖。</p>
+<table>
+  <tr><th>#</th><th>條目</th><th>來源</th></tr>
+  <tr><td>1</td><td>F12 人話護欄＋表達／狀態層分離</td><td>dept-spec 實測 F12 與第五節根因</td></tr>
+  <tr><td>2</td><td>檔案路由載入失敗分支</td><td>F1 一般化</td></tr>
+  <tr><td>3</td><td>啟動判準題入 question-bank</td><td>F5 一般化</td></tr>
+  <tr><td>4</td><td>圈外失效案例重圈 override</td><td>F3 一般化</td></tr>
+  <tr><td>5</td><td>轉譯材料「存在但未到手」中間態</td><td>F2-lite</td></tr>
+  <tr><td>6</td><td>routing 事件 event_id（自動合併場景）</td><td>v0.2.2 時間戳輪</td></tr>
+  <tr><td>7</td><td>「失效案例定結構；生成式問句校正」入 router 不變量</td><td>雙實測收斂條文</td></tr>
+  <tr><td>8</td><td>preflight traceback → 受控錯誤介面（三案例）</td><td>平行驗證：六攻擊</td></tr>
+  <tr><td>9</td><td>checkpoint 階段／證據一致性診斷</td><td>平行驗證：Codex 提案</td></tr>
+  <tr><td>10</td><td>evidence projection 語意稽核條文（preflight 0/0 ≠ 來源保真）</td><td>三編譯器一致性</td></tr>
+  <tr><td>11</td><td>夾具改虛構領域＋FIXTURE 哨兵</td><td>污染假說證實</td></tr>
+  <tr><td>12</td><td>preflight 判例編號一致性檢查（引用範圍 vs cases.md 實存）</td><td>fix2.1 coverage 殘留</td></tr>
+</table>
+
 <footer>
   <span>SKILL-INTERVIEWER LEDGER · 編譯 Claude × 稽核 Codex</span>
-  <span>凍結 v0.2.6 · 2BEF9B4E…69AC · BACKLOG 13</span>
+  <span>凍結 v0.2.6 · 2BEF9B4E…69AC · BACKLOG 12</span>
 </footer>
 
 </div>
