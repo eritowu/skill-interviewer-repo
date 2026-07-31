@@ -1,6 +1,6 @@
 # Changelog
 
-一版一雜湊（僅約束內層 zip）。完整敘事版見 `docs/changelog.html`。
+版本錨分期政策：v0.2～v0.2.6 記錄內層 zip 位元組雜湊（僅供歷史與傳輸完整性）；**v0.2.7 起錨定 manifest 雜湊**（`preflight.py --manifest-hash` 任何人可重算）。完整敘事版見 `docs/changelog.html`。
 
 | 版本 | 內層 SHA-256（前 16） | 重點 |
 |---|---|---|
@@ -11,7 +11,7 @@
 | v0.2.4 | 5bb1fc4c89327048 | compile receipt；scripts/preflight.py 確定性閘（6→7 檔）；type 機讀欄；禁 Compress-Archive；重開驗證 |
 | v0.2.5 | 7b500e4ff88a595f | 腳本六缺口修復（orig_filename、--expect 雙向、yaml 逐行驗、順序表、CRLF、觸發/排除句 FAIL）；--selftest 六夾具內嵌 |
 | v0.2.6 | 2bef9b4e7dc4341e | Windows read 崩潰修復（norm→ZipInfo）；重複鍵恰好一次；$name token boundary；暫存清理；夾具 6→8。雙平台簽核 |
-| v0.2.7 | manifest b8744fe6fc7dec93 | 第三方稽核 15 項回修：UTF-16/BOM 受控 FAIL、--expect 雙序與缺值、frontmatter 重複鍵、反掃擴 scripts\|assets、好包零警戒（版本脫鉤可自檢）、--manifest-hash 版本錨、夾具 8→11、description 文件轉換召回＋單次排除、預設值三級消歧、適用範圍註明。待 Codex 副署 |
+| v0.2.7 | manifest b8744fe6fc7dec93 | 第三方稽核 15 項回修：UTF-16/BOM 受控 FAIL、--expect 雙序與缺值、frontmatter 重複鍵、反掃擴 scripts\|assets、好包零警戒（版本脫鉤可自檢）、--manifest-hash 版本錨、夾具 8→11、description 文件轉換召回＋單次排除、預設值三級消歧、適用範圍註明。雙平台副署（Codex 2026-07-31：Win selftest 11/11、manifest 獨立重算相符、錨不受重排／時間戳／壓縮影響）|
 
 作廢未流通位元組（勘誤）：b24a6bbbe42becc1（v0.2.3 殘留重打）、a284d504c4e4cd8e（v0.2.6 殘留重打）。
 
@@ -32,9 +32,10 @@ v0.2.6  2bef9b4e7dc4341ed3693181b6d52152c648e14f048f3644c7eb7543815d69ac
 ```
 
 v0.3 backlog：12 條（計數由清單推導）——1 F12 人話護欄＋表達／狀態層分離；2 路由載入失敗分支；3 啟動判準題；4 圈外失效案例重圈；5 材料未到手中間態；6 routing event_id；7 失效案例定結構條文；8 traceback 受控錯誤介面；9 checkpoint 一致性診斷；10 projection 語意稽核條文；11 夾具虛構領域護欄；12 判例編號一致性檢查。
-（#8 於 v0.2.7 部分落地：編碼與 CLI 類 malformed input 已改受控 FAIL；Codex 六攻擊之三個 traceback 案例待其對 v0.2.7 回驗比對是否同源。）
+（#8 v0.2.7 落地 2/3——非 UTF-8 與 --expect 缺值已收斂；壞 ZIP 之 BadZipFile 仍開，Codex 回驗 2026-07-31 定案；本輪依「Skill 包不重建」明令不修，留待下一版本窗。）
 
 ```
 v0.2.7  manifest  b8744fe6fc7dec93a8c8cc4adcd4a5c590b0ec002ee5925c840d892453152f69
         zip傳輸   4343147894a14608…（不入版本契約）
+        repo 補 .gitattributes：skill-interviewer/** text eol=lf——Windows autocrlf 之 clean clone 重算 manifest 方能相符
 ```

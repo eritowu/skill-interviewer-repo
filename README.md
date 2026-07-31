@@ -2,7 +2,7 @@
 
 透過結構化訪談把專家的判斷方式萃取出來，編譯成可安裝、可攜的跨平台 Skill（Claude / Codex）。
 現行版 **v0.2.7**，版本錨（manifest 雜湊）`b8744fe6fc7dec93a8c8cc4adcd4a5c590b0ec002ee5925c840d892453152f69`。
-自 v0.2.7 起，版本契約以 **manifest 雜湊**為準（`preflight.py <目錄或zip> --manifest-hash` 任何人可重算）；zip 位元組雜湊降為傳輸完整性紀錄。雙平台簽核至 v0.2.6，v0.2.7 待 Codex 副署。
+自 v0.2.7 起，版本契約以 **manifest 雜湊**為準（`preflight.py <目錄或zip> --manifest-hash` 任何人可重算）；zip 位元組雜湊降為傳輸完整性紀錄。雙平台簽核至 v0.2.7（Codex 2026-07-31 副署：Windows selftest 11/11、manifest 獨立重算相符）。
 
 ## 結構
 - `skill-interviewer/` — 套件本體（7 檔）：SKILL.md、references/×4、agents/openai.yaml、scripts/preflight.py

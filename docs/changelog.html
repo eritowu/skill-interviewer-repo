@@ -96,9 +96,9 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <p class="sub">七個版本、六輪跨 AI 對抗驗收（Claude 編譯 × Codex 稽核）。一版一雜湊，雜湊綁內層；每一版都由一次真實事故驅動，每一道閘都先傷到作者自己。</p>
   <div class="stamp">現行 v0.2.7</div>
   <div class="meta">
-    <div>現行版<b>v0.2.7 · manifest b8744fe6…2f69</b></div><div>雙平台簽核至<b>v0.2.6（v0.2.7 待副署）</b></div>
+    <div>現行版<b>v0.2.7 · manifest b8744fe6…2f69</b></div><div>雙平台簽核至<b>v0.2.7</b></div>
     <div>套件構成<b>7 檔（SKILL＋4 refs＋yaml＋preflight.py）</b></div>
-    <div>自檢<b>selftest 11/11 · Linux（Win 待副署）</b></div>
+    <div>自檢<b>selftest 11/11 · Win + Linux</b></div>
     <div>v0.3 backlog<b>12 條 · 凍結待議</b></div>
   </div>
 </header>
@@ -186,12 +186,12 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
 
 
 <div class="node final"><div class="vcard">
-  <div class="vhead"><span class="vname">v0.2.7</span><span class="vhash">manifest b8744fe6…2f69</span><span class="vdate">07-31 待副署</span></div>
+  <div class="vhead"><span class="vname">v0.2.7</span><span class="vhash">manifest b8744fe6…2f69</span><span class="vdate">07-31 雙簽</span></div>
   <div class="incident">事故：第三方本地稽核 15 項——線上安裝版停在 v0.2.3、閘門編碼／CLI 邊界崩潰、雜湊契約無人能重算、dept 引擎路徑六處斷鏈</div>
   <dl>
     <dt>修正</dt><dd>UTF-16／BOM 統一受控 FAIL（decode()，traceback 不外洩）；<code>--expect</code> 雙參數序與缺值不再 IndexError；frontmatter 重複鍵恰好一次（補平 v0.2.6 只修 yaml 的不對稱）；反掃擴 references|scripts|assets；selftest 好包改零錯零警戒——版本字串脫鉤自此可被自檢抓到。</dd>
     <dt>新增</dt><dd><b>--manifest-hash 可重現版本錨</b>：自本版起版本契約＝manifest 雜湊（路徑＋逐檔內容雜湊排序後再雜湊），任何人可從內容重算；zip 雜湊降為傳輸紀錄。夾具 8→11；description 補文件格式轉換召回與單次排除句；預設值三級消歧（受訪領域即文件格式→格式規則屬判準）；適用範圍註明（本體自檢預期失敗非 bug）。</dd>
-    <dt>影響</dt><dd>兩平台需重裝（線上實為 v0.2.3）；dept-spec 同輪完成 reference/→references/ 斷鏈修復；待 Codex 副署後恢復雙簽凍結。</dd>
+    <dt>影響</dt><dd>兩平台需重裝（線上實為 v0.2.3）；dept-spec 同輪完成 reference/→references/ 斷鏈修復；Codex 副署通過——Windows 11/11、manifest 獨立重算相符且不受重排、時間戳、壓縮影響；repo 補 .gitattributes 行尾契約後，Windows clean clone 重算方能回錨。</dd>
   </dl>
   <div class="delta">Δ SKILL.md · preflight.py · README · CHANGELOG · docs（output-template 僅版號）</div>
 </div></div>
@@ -210,7 +210,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <tr><td>v0.2.5</td><td class="h">7b500e4ff88a595fe8d6d3a500705c4790dbf79ee8a32887a09b9b4475017717</td><td>已出貨</td><td>腳本重寫</td></tr>
   <tr class="dead"><td>—</td><td class="h">a284d504c4e4cd8e83c70a083e8d04069fbe858e725bee7a1311c95c91362d02</td><td>作廢未流通</td><td>v0.2.6 殘留重打</td></tr>
   <tr><td>v0.2.6</td><td class="h">2bef9b4e7dc4341ed3693181b6d52152c648e14f048f3644c7eb7543815d69ac</td><td>雙簽</td><td>preflight.py 主修</td></tr>
-  <tr><td><b>v0.2.7</b></td><td class="h"><b>manifest：b8744fe6fc7dec93a8c8cc4adcd4a5c590b0ec002ee5925c840d892453152f69</b></td><td><b>現行 · 待副署</b></td><td>preflight.py＋SKILL＋docs</td></tr>
+  <tr><td><b>v0.2.7</b></td><td class="h"><b>manifest：b8744fe6fc7dec93a8c8cc4adcd4a5c590b0ec002ee5925c840d892453152f69</b></td><td><b>現行 · 雙簽</b></td><td>preflight.py＋SKILL＋docs</td></tr>
 </table>
 
 <h2><span class="tag">03</span>三段演進與不變量</h2>
@@ -247,7 +247,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <tr><td>5</td><td>轉譯材料「存在但未到手」中間態</td><td>F2-lite</td></tr>
   <tr><td>6</td><td>routing 事件 event_id（自動合併場景）</td><td>v0.2.2 時間戳輪</td></tr>
   <tr><td>7</td><td>「失效案例定結構；生成式問句校正」入 router 不變量</td><td>雙實測收斂條文</td></tr>
-  <tr><td>8</td><td>preflight traceback → 受控錯誤介面（三案例）<b>——v0.2.7 部分落地（編碼／CLI 類），六攻擊三案例待 Codex 回驗比對</b></td><td>平行驗證：六攻擊</td></tr>
+  <tr><td>8</td><td>preflight traceback → 受控錯誤介面（三案例）<b>——v0.2.7 落地 2/3（Codex 回驗：非 UTF-8 與 --expect 缺值已收斂；壞 ZIP BadZipFile 仍開）</b></td><td>平行驗證：六攻擊</td></tr>
   <tr><td>9</td><td>checkpoint 階段／證據一致性診斷</td><td>平行驗證：Codex 提案</td></tr>
   <tr><td>10</td><td>evidence projection 語意稽核條文（preflight 0/0 ≠ 來源保真）</td><td>三編譯器一致性</td></tr>
   <tr><td>11</td><td>夾具改虛構領域＋FIXTURE 哨兵</td><td>污染假說證實</td></tr>
