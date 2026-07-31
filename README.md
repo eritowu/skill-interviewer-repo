@@ -29,4 +29,7 @@ python skill-interviewer/scripts/preflight.py <目錄或zip> --expect SKILL.md,r
 ## 版本紀律
 一版一雜湊：v0.2.7 起錨定 manifest 雜湊（內容可重現）；歷史各版為 zip 位元組雜湊，僅供紀錄。外層 zip 為信使側封裝，不入版本契約。生成之 skill 的私有訪談 checkpoint 一律置於 `<skill-name>-private/`，永不入庫、永不入包（.gitignore 已涵蓋）。
 
-授權：未定，由 owner 決定後補。
+
+## License
+
+Licensed under the Apache License 2.0. See `LICENSE`.
