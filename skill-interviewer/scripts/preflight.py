@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""skill-interviewer 產出確定性 preflight（v0.2.6）
+"""skill-interviewer 產出確定性 preflight（v0.2.7）
 
 用法：
-    python preflight.py <skill 目錄或 .zip/.skill> [--expect f1,f2,...]
+    python preflight.py <生成的 skill 目錄或 .zip/.skill> [--expect f1,f2,...]
+    python preflight.py <目錄或 zip> --manifest-hash   # 可重現版本錨（v0.2.7 起為版本契約）
     python preflight.py --selftest
+
+適用範圍：本腳本只驗「生成的」skill。對訪談員本體執行會有預期內失敗
+（allowlist、觸發句、type 欄、source 行、條件式引用），不代表本體有問題。
+fork 期間資料夾名維持 skill-interviewer，版本以 branch 或外層目錄區分。
 
 --expect：以 compile receipt 的檔案清單做雙向完全相等（多、缺都擋）。
 --selftest：以內建對抗夾具全數驗證腳本自身 fail-closed；新環境
@@ -17,7 +22,7 @@
 import base64, io, re, sys, tempfile, zipfile
 from pathlib import Path
 
-SYNC_VERSION = "v0.2.6"
+SYNC_VERSION = "v0.2.7"
 COLON = "[：:]"
 MASTER = ["範圍自檢", "適用範圍", "輸入與缺失資料處理", "判斷精神", "決策規則",
           "取捨", "例外", "衝突", "工作流程", "工具與環境依賴",
@@ -31,6 +36,29 @@ MATRIX = {"判斷型": ALWAYS | JUDGE, "做事型": ALWAYS | WORK,
           "混合型": ALWAYS | JUDGE | WORK}
 ALLOW = {"SKILL.md", "references/cases.md", "agents/openai.yaml", "governance.yaml"}
 FORBID_NAME = ("private", "checkpoint", "receipt", "台帳")
+
+def decode(raw, label, errs):
+    """統一解碼。BOM 與非 UTF-8 給明確 FAIL，不讓 traceback 外洩。"""
+    for bom, enc in ((b"\xef\xbb\xbf", "utf-8-sig"),
+                     (b"\xff\xfe", "utf-16"), (b"\xfe\xff", "utf-16")):
+        if raw.startswith(bom):
+            errs.append(f"{label} 帶 BOM 或非純 UTF-8（判為 {enc}）——請以 UTF-8 無 BOM 存檔")
+            return raw.decode(enc, errors="replace").replace("\r\n", "\n")
+    try:
+        return raw.decode("utf-8").replace("\r\n", "\n")
+    except UnicodeDecodeError as e:
+        errs.append(f"{label} 不是合法 UTF-8：{e}")
+        return raw.decode("utf-8", errors="replace").replace("\r\n", "\n")
+
+def manifest_hash(files):
+    """可重現、跨平台一致：路徑（posix）＋各檔內容雜湊，按路徑排序後再雜湊。版本錨自 v0.2.7 起以此為準。"""
+    import hashlib
+    h = hashlib.sha256()
+    for path in sorted(files):
+        h.update(path.encode("utf-8")); h.update(b"\n")
+        h.update(hashlib.sha256(files[path]).hexdigest().encode()); h.update(b"\n")
+    return h.hexdigest()
+
 
 def load(target, errs):
     """回傳 (files: dict[路徑→bytes], root)。zip 一律以 orig_filename 驗路徑。"""
@@ -57,7 +85,7 @@ def load(target, errs):
         return {(n.split("/", 1)[1] if root else n): zf.read(seen[n]) for n in names}, root
 
 def check_openai_yaml(raw, skill_name, errs):
-    txt = raw.decode("utf-8").replace("\r\n", "\n")
+    txt = decode(raw, "openai.yaml", errs)
     if len(re.findall(r"^interface\s*:\s*$", txt, re.M)) != 1:
         errs.append("openai.yaml interface: 應恰好出現一次")
     fields = {}
@@ -106,14 +134,19 @@ def run(files, root, expect=None):
         if extra: errs.append(f"allowlist 之外的檔案：{sorted(extra)}")
     if "SKILL.md" not in files:
         errs.append("缺 SKILL.md"); return errs, wrns
-    text = files["SKILL.md"].decode("utf-8").replace("\r\n", "\n")
+    text = decode(files["SKILL.md"], "SKILL.md", errs)
 
     name = None
     m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
     if not m:
         errs.append("frontmatter 缺失")
     else:
-        keys = dict(re.findall(r"^(\w[\w-]*)\s*:\s*(.+)$", m.group(1), re.M))
+        pairs = re.findall(r"^(\w[\w-]*)\s*:\s*(.+)$", m.group(1), re.M)
+        ks = [k for k, _ in pairs]
+        dups = sorted({k for k in ks if ks.count(k) > 1})
+        if dups:
+            errs.append(f"frontmatter 重複鍵：{dups}（應各恰好一次）")
+        keys = dict(pairs)
         if set(keys) != {"name", "description"}:
             errs.append(f"frontmatter 鍵應恰為 name+description，實得 {sorted(keys)}")
         name = keys.get("name", "").strip().strip('"')
@@ -169,7 +202,7 @@ def run(files, root, expect=None):
     if cv and not ("assumed" in cv.group(0) and "待補" in cv.group(0)):
         wrns.append("coverage 區未見 assumed／#待補 標記，確認是否如實列出")
 
-    for ref in set(re.findall(r"references/[A-Za-z0-9_.\-]+", text)):
+    for ref in set(re.findall(r"(?:references|scripts|assets)/[A-Za-z0-9_.\-]+", text)):
         if ref not in files:
             errs.append(f"SKILL.md 引用了 {ref}，但包內不存在")
     for f in files:
@@ -242,7 +275,7 @@ description: 協助新人與 LLM 依主管判準審核供應商報價，產出�
 - owner：採購部
 - version：0.1
 - interviewed：2026-07-29
-- source：skill-interviewer v0.2.6
+- source：skill-interviewer v0.2.7
 """
 GOOD_YAML = ('interface:\n  display_name: "報價審核"\n'
              '  short_description: "依主管既有判準審核供應商報價，輸出審核結論與退補件清單"\n'
@@ -258,9 +291,9 @@ def selftest():
         ok &= hit
     G = {"SKILL.md": GOOD_DOC.encode(), "references/cases.md": b"x",
          "agents/openai.yaml": GOOD_YAML.encode()}
-    case("好包通過", False, run(dict(G), "fx-quote-review")[0])
-    case("CRLF 合法通過", False,
-         run({**G, "SKILL.md": GOOD_DOC.replace("\n", "\r\n").encode()}, "fx-quote-review")[0])
+    e, w = run(dict(G), "fx-quote-review"); case("好包通過（零錯零警）", False, e + w)
+    e, w = run({**G, "SKILL.md": GOOD_DOC.replace("\n", "\r\n").encode()}, "fx-quote-review")
+    case("CRLF 合法通過（零錯零警）", False, e + w)
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:
         f.write(base64.b64decode(EVIL_ZIP_B64)); evil = f.name
     try:
@@ -287,7 +320,15 @@ def selftest():
     pfx = dict(G); pfx["agents/openai.yaml"] = GOOD_YAML.replace(
         "$fx-quote-review", "$fx-quote-review-extra").encode()
     case("skill 名前綴碰撞必擋", True, run(pfx, "fx-quote-review")[0], must="精確")
-    print(f"== selftest {'PASS' if ok else 'FAIL'}（8 夾具）==")
+    bom = dict(G); bom["SKILL.md"] = b"\xef\xbb\xbf" + GOOD_DOC.encode()
+    case("BOM 必擋且指明編碼", True, run(bom, "fx-quote-review")[0], must="BOM")
+    u16 = dict(G); u16["SKILL.md"] = GOOD_DOC.encode("utf-16")
+    case("UTF-16 必擋不崩潰", True, run(u16, "fx-quote-review")[0], must="UTF-8")
+    dfm = dict(G)
+    dfm["SKILL.md"] = GOOD_DOC.replace("description: 協助",
+        "description: 假描述，當使用者亂寫時使用，不處理任何事\ndescription: 協助", 1).encode()
+    case("frontmatter 重複鍵必擋", True, run(dfm, "fx-quote-review")[0], must="重複鍵")
+    print(f"== selftest {'PASS' if ok else 'FAIL'}（11 夾具）==")
     return 0 if ok else 1
 
 if __name__ == "__main__":
@@ -295,12 +336,23 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if args == ["--selftest"]:
         sys.exit(selftest())
-    if not args or len(args) > 3:
+    if not args:
         print(__doc__); sys.exit(2)
+    show_manifest = "--manifest-hash" in args
+    if show_manifest:
+        args.remove("--manifest-hash")
     expect = None
     if "--expect" in args:
-        i = args.index("--expect"); expect = args[i + 1].split(","); args = args[:i]
+        i = args.index("--expect")
+        if i + 1 >= len(args):
+            print("[FAIL] --expect 需要一個逗號分隔的檔案清單"); sys.exit(2)
+        expect = args[i + 1].split(",")
+        args = args[:i] + args[i + 2:]
+    if len(args) != 1:
+        print(__doc__); sys.exit(2)
     errs = []
     files, root = load(args[0], errs)
+    if show_manifest:
+        print("manifest:", manifest_hash(files)); sys.exit(0)
     e2, w2 = run(files, root, expect)
     sys.exit(report(errs + e2, w2))

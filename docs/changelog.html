@@ -94,11 +94,11 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <div class="eyebrow">SKILL-INTERVIEWER · VERSION LEDGER · 2026-07-29 → 07-30</div>
   <h1>Skill 訪談員 改版總表</h1>
   <p class="sub">七個版本、六輪跨 AI 對抗驗收（Claude 編譯 × Codex 稽核）。一版一雜湊，雜湊綁內層；每一版都由一次真實事故驅動，每一道閘都先傷到作者自己。</p>
-  <div class="stamp">已凍結 v0.2.6</div>
+  <div class="stamp">現行 v0.2.7</div>
   <div class="meta">
-    <div>現行凍結版<b>v0.2.6 · 2bef9b4e…69ac</b></div>
+    <div>現行版<b>v0.2.7 · manifest b8744fe6…2f69</b></div><div>雙平台簽核至<b>v0.2.6（v0.2.7 待副署）</b></div>
     <div>套件構成<b>7 檔（SKILL＋4 refs＋yaml＋preflight.py）</b></div>
-    <div>雙平台驗收<b>selftest 8/8 · Win + Linux</b></div>
+    <div>自檢<b>selftest 11/11 · Linux（Win 待副署）</b></div>
     <div>v0.3 backlog<b>12 條 · 凍結待議</b></div>
   </div>
 </header>
@@ -173,7 +173,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
 </div></div>
 <div class="ghost">幽靈 <code>a284d504…</code> — v0.2.6 首次打包後，腳本 docstring 殘留「六個夾具」被掃出，交付前重打作廢。</div>
 
-<div class="node final"><div class="vcard">
+<div class="node"><div class="vcard">
   <div class="vhead"><span class="vname">v0.2.6</span><span class="vhash">2bef9b4e…69ac</span><span class="vdate">07-29 定案</span></div>
   <div class="incident">事故：Windows selftest 第三題崩潰——偵測看原始路徑、讀檔卻拿原始字串查正規化索引</div>
   <dl>
@@ -184,10 +184,21 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <div class="delta">Δ preflight.py（主）· SKILL.md · output-template.md（版號與措辭）</div>
 </div></div>
 
+
+<div class="node final"><div class="vcard">
+  <div class="vhead"><span class="vname">v0.2.7</span><span class="vhash">manifest b8744fe6…2f69</span><span class="vdate">07-31 待副署</span></div>
+  <div class="incident">事故：第三方本地稽核 15 項——線上安裝版停在 v0.2.3、閘門編碼／CLI 邊界崩潰、雜湊契約無人能重算、dept 引擎路徑六處斷鏈</div>
+  <dl>
+    <dt>修正</dt><dd>UTF-16／BOM 統一受控 FAIL（decode()，traceback 不外洩）；<code>--expect</code> 雙參數序與缺值不再 IndexError；frontmatter 重複鍵恰好一次（補平 v0.2.6 只修 yaml 的不對稱）；反掃擴 references|scripts|assets；selftest 好包改零錯零警戒——版本字串脫鉤自此可被自檢抓到。</dd>
+    <dt>新增</dt><dd><b>--manifest-hash 可重現版本錨</b>：自本版起版本契約＝manifest 雜湊（路徑＋逐檔內容雜湊排序後再雜湊），任何人可從內容重算；zip 雜湊降為傳輸紀錄。夾具 8→11；description 補文件格式轉換召回與單次排除句；預設值三級消歧（受訪領域即文件格式→格式規則屬判準）；適用範圍註明（本體自檢預期失敗非 bug）。</dd>
+    <dt>影響</dt><dd>兩平台需重裝（線上實為 v0.2.3）；dept-spec 同輪完成 reference/→references/ 斷鏈修復；待 Codex 副署後恢復雙簽凍結。</dd>
+  </dl>
+  <div class="delta">Δ SKILL.md · preflight.py · README · CHANGELOG · docs（output-template 僅版號）</div>
+</div></div>
 </div>
 
 <h2><span class="tag">02</span>雜湊帳本</h2>
-<p class="lede">「一版一雜湊」僅約束內層；外層 zip 為信使側封裝紀錄，不入版本契約。中間五版無 commit tree，本表即其唯一驗證錨點，故存完整 64 字。</p>
+<p class="lede">自 v0.2.7 起版本錨＝<b>manifest 雜湊</b>（<code>--manifest-hash</code> 可重現重算）；v0.2～v0.2.6 為 zip 位元組雜湊，無法從內容重算，僅供歷史與傳輸紀錄。中間五版無 commit tree，本表即其唯一錨點，故存完整 64 字。外層 zip 不入版本契約。</p>
 <table>
   <tr><th>版本</th><th>內層 SHA-256（完整 64 字）</th><th>狀態</th><th>delta</th></tr>
   <tr><td>v0.2</td><td class="h">876509d583e6f83c68a4a7b6b7e1beef40c8f924d21b07af2cc0407cb335a809</td><td>已出貨</td><td>基準六檔</td></tr>
@@ -198,7 +209,8 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <tr><td>v0.2.4</td><td class="h">5bb1fc4c89327048ce2c2e953147a0c8d43e394546196e5b1e55b32756fb3636</td><td>已出貨</td><td>＋preflight.py（7 檔）</td></tr>
   <tr><td>v0.2.5</td><td class="h">7b500e4ff88a595fe8d6d3a500705c4790dbf79ee8a32887a09b9b4475017717</td><td>已出貨</td><td>腳本重寫</td></tr>
   <tr class="dead"><td>—</td><td class="h">a284d504c4e4cd8e83c70a083e8d04069fbe858e725bee7a1311c95c91362d02</td><td>作廢未流通</td><td>v0.2.6 殘留重打</td></tr>
-  <tr><td><b>v0.2.6</b></td><td class="h"><b>2bef9b4e7dc4341ed3693181b6d52152c648e14f048f3644c7eb7543815d69ac</b></td><td><b>凍結中</b></td><td>preflight.py 主修</td></tr>
+  <tr><td>v0.2.6</td><td class="h">2bef9b4e7dc4341ed3693181b6d52152c648e14f048f3644c7eb7543815d69ac</td><td>雙簽</td><td>preflight.py 主修</td></tr>
+  <tr><td><b>v0.2.7</b></td><td class="h"><b>manifest：b8744fe6fc7dec93a8c8cc4adcd4a5c590b0ec002ee5925c840d892453152f69</b></td><td><b>現行 · 待副署</b></td><td>preflight.py＋SKILL＋docs</td></tr>
 </table>
 
 <h2><span class="tag">03</span>三段演進與不變量</h2>
@@ -235,7 +247,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
   <tr><td>5</td><td>轉譯材料「存在但未到手」中間態</td><td>F2-lite</td></tr>
   <tr><td>6</td><td>routing 事件 event_id（自動合併場景）</td><td>v0.2.2 時間戳輪</td></tr>
   <tr><td>7</td><td>「失效案例定結構；生成式問句校正」入 router 不變量</td><td>雙實測收斂條文</td></tr>
-  <tr><td>8</td><td>preflight traceback → 受控錯誤介面（三案例）</td><td>平行驗證：六攻擊</td></tr>
+  <tr><td>8</td><td>preflight traceback → 受控錯誤介面（三案例）<b>——v0.2.7 部分落地（編碼／CLI 類），六攻擊三案例待 Codex 回驗比對</b></td><td>平行驗證：六攻擊</td></tr>
   <tr><td>9</td><td>checkpoint 階段／證據一致性診斷</td><td>平行驗證：Codex 提案</td></tr>
   <tr><td>10</td><td>evidence projection 語意稽核條文（preflight 0/0 ≠ 來源保真）</td><td>三編譯器一致性</td></tr>
   <tr><td>11</td><td>夾具改虛構領域＋FIXTURE 哨兵</td><td>污染假說證實</td></tr>
@@ -244,7 +256,7 @@ footer{margin-top:70px;border-top:2px solid var(--ink);padding-top:16px;display:
 
 <footer>
   <span>SKILL-INTERVIEWER LEDGER · 編譯 Claude × 稽核 Codex</span>
-  <span>凍結 v0.2.6 · 2BEF9B4E…69AC · BACKLOG 12</span>
+  <span>現行 v0.2.7 · MANIFEST B8744FE6…2F69 · BACKLOG 12</span>
 </footer>
 
 </div>

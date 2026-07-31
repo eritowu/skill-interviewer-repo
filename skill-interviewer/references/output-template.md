@@ -146,7 +146,7 @@ description: <讓 LLM 或新人做哪類判斷、產出什麼交付物>。當使
 - owner：<部門或角色（預設）。實名僅限：台帳有 `confirmed` 同意紀錄且已列入掃描 allowlist；allowlist 只豁免本區塊，判例正文出現同名照樣擋>
 - version：0.1<速成模式加註（coverage limited）>
 - interviewed：<YYYY-MM-DD>
-- source：skill-interviewer v0.2.6
+- source：skill-interviewer v0.2.7
 ```
 
 ## 測試題與判例的分工
@@ -177,7 +177,7 @@ interface:
 ```yaml
 compile_receipt:
   type: <判斷型|做事型|混合型>
-  template_version: v0.2.6
+  template_version: v0.2.7
   sections:                     # 該型別的每一個必填章逐列，值只有 present|missing
     範圍自檢: present
     適用範圍: present
